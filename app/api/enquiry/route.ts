@@ -5,7 +5,21 @@ export const runtime = 'nodejs';
 
 const phonePattern = /^[+0-9()\s-]{10,16}$/;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const allowedBudgets = new Set(['', 'Below ₹50 lakh', '₹50–75 lakh', '₹75 lakh–₹1 crore', 'Above ₹1 crore', 'Not decided']);
+const allowedBudgets = new Set([
+  '',
+  'Below 1CR',
+  '1CR-2.5CR',
+  '1CR - 2.5CR',
+  '3-5CR',
+  '3 - 5CR',
+  'ABOVE 5CR',
+  'Above 5CR',
+  'Not decided',
+  'Below ₹50 lakh',
+  '₹50–75 lakh',
+  '₹75 lakh–₹1 crore',
+  'Above ₹1 crore',
+]);
 const allowedPurposes = new Set(['', 'Buying for self', 'Investment', 'NRI property purchase', 'Other']);
 
 export async function POST(request: NextRequest) {

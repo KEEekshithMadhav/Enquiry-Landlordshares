@@ -39,11 +39,9 @@ export async function POST(request: NextRequest) {
     if (!allowedBudgets.has(typeof body.budget === 'string' ? body.budget : '')) return NextResponse.json({ error: 'Select a valid budget range.' }, { status: 400 });
     if (!allowedPurposes.has(typeof body.purpose === 'string' ? body.purpose : '')) return NextResponse.json({ error: 'Select a valid enquiry purpose.' }, { status: 400 });
 
-    const webhookUrl = process.env.WYLTO_WEBHOOK_URL;
-    if (!webhookUrl) {
-      console.error('WYLTO_WEBHOOK_URL is not configured.');
-      return NextResponse.json({ error: 'Enquiries are temporarily unavailable. Please try again later.' }, { status: 503 });
-    }
+    const webhookUrl = process.env.WYLTO_WEBHOOK_URL || 'https://server.wylto.com/webhook/HzBauo0nx775KCYKnR';
+    const sheetWebhookUrl = process.env.GOOGLE_SHEET_URL || process.env.GOOGLE_SHEET_WEBHOOK_URL || process.env.GOOGLE_SHEETS_WEBHOOK_URL;
+
     const parsedWebhook = new URL(webhookUrl);
     if (parsedWebhook.protocol !== 'https:' || parsedWebhook.hostname !== 'server.wylto.com') {
       console.error('WYLTO_WEBHOOK_URL must use HTTPS and the approved Wylto host.');
@@ -74,7 +72,8 @@ export async function POST(request: NextRequest) {
       consentTimestamp: new Date().toISOString(),
     };
 
-    const upstream = await fetch(webhookUrl, {
+    // Forward to Wylto CRM
+    const wyltoPromise = fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(lead),
@@ -82,8 +81,34 @@ export async function POST(request: NextRequest) {
       signal: AbortSignal.timeout(10000),
     });
 
-    if (!upstream.ok) {
-      console.error(`Wylto webhook returned status ${upstream.status}.`);
+    // Forward to Google Sheet Webhook if configured
+    const sheetPromise = sheetWebhookUrl
+      ? fetch(sheetWebhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(lead),
+          cache: 'no-store',
+          redirect: 'follow',
+          signal: AbortSignal.timeout(10000),
+        }).catch((err) => {
+          console.error('Google Sheets webhook error:', err instanceof Error ? err.message : err);
+          return null;
+        })
+      : null;
+
+    const [wyltoResult, sheetResult] = await Promise.all([
+      wyltoPromise.catch((err) => {
+        console.error('Wylto webhook network error:', err instanceof Error ? err.message : err);
+        return null;
+      }),
+      sheetPromise,
+    ]);
+
+    const wyltoOk = wyltoResult?.ok;
+    const sheetOk = sheetResult?.ok;
+
+    if (!wyltoOk && !sheetOk) {
+      console.error(`Both destinations failed. Wylto: ${wyltoResult?.status}, Sheets: ${sheetResult?.status}`);
       return NextResponse.json({ error: 'We could not deliver your enquiry right now. Please try again shortly.' }, { status: 502 });
     }
 

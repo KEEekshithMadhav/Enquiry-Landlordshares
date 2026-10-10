@@ -1,5 +1,4 @@
 import { CheckCircle2, ShieldCheck, Sparkles, MessageCircle, Building2 } from 'lucide-react';
-import { properties } from '@/lib/properties';
 import EnquiryForm from './EnquiryForm';
 import SiteHeader from './SiteHeader';
 
@@ -22,12 +21,12 @@ export default async function PropertyEnquiryPage({ searchParams }: Props) {
         <div className="lead-layout">
           <div className="lead-intro">
             <span className="eyebrow"><span className="eyebrow-dot" /> LANDLORDSHARES · PROPERTY ENQUIRIES</span>
-            <h1>Let’s find the right property <em>for you.</em></h1>
+            <h1>Let’s find the right Landlord property <em>for you.</em></h1>
             <p className="intro-copy">Looking for your next home or investment in Hyderabad? Share a few details and our property team will help you explore suitable options.</p>
 
             <div className="intro-points">
               <div className="intro-point"><span className="point-icon"><Building2 size={18} /></span><span><strong>Property options that fit</strong><small>Tell us your preferences and budget.</small></span></div>
-              <div className="intro-point"><span className="point-icon"><MessageCircle size={18} /></span><span><strong>Personal follow-up</strong><small>Our team can contact you about your enquiry.</small></span></div>
+              <div className="intro-point"><span className="point-icon"><MessageCircle size={18} /></span><span><strong>Personal Assistance</strong><small>Our team can contact you about your enquiry.</small></span></div>
               <div className="intro-point"><span className="point-icon"><ShieldCheck size={18} /></span><span><strong>Your details stay purposeful</strong><small>Used to respond to your property enquiry.</small></span></div>
             </div>
 

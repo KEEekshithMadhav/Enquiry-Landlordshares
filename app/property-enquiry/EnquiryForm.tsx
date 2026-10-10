@@ -1,7 +1,6 @@
 'use client';
 
 import { FormEvent, useEffect, useState } from 'react';
-import { properties } from '@/lib/properties';
 
 type Props = { selectedPropertyId: string; source: string; campaign: string; content: string };
 
@@ -52,13 +51,12 @@ export default function EnquiryForm({ selectedPropertyId, source, campaign, cont
     <div className="field-row"><label>Full name *<input name="name" autoComplete="name" minLength={2} maxLength={80} required placeholder="Enter your full name"/></label></div>
     <div className="field-row"><label>Phone number *<input name="phoneNumber" type="tel" autoComplete="tel" inputMode="tel" minLength={10} maxLength={16} required pattern="[+0-9() -]{10,16}" placeholder="e.g. +91 98765 43210"/><small>Include your country code if outside India.</small></label></div>
     <div className="field-row"><label>Email address <span className="optional">Optional</span><input name="email" type="email" autoComplete="email" maxLength={120} placeholder="you@example.com"/></label></div>
-    <div className="field-row"><label>Property of interest <span className="optional">Optional</span><select name="propertyId" value={propertyId} onChange={(event) => setPropertyId(event.target.value)}><option value="">Not sure yet</option>{properties.map((property) => <option value={property.id} key={property.id}>{property.name} — {property.type}</option>)}<option value="general-enquiry">General enquiry / help me choose</option></select></label></div>
     <div className="field-row field-grid"><label>Budget range<select name="budget" defaultValue=""><option value="">Choose a budget</option><option>Below ₹50 lakh</option><option>₹50–75 lakh</option><option>₹75 lakh–₹1 crore</option><option>Above ₹1 crore</option><option>Not decided</option></select></label><label>Purpose<select name="purpose" defaultValue=""><option value="">Choose purpose</option><option>Buying for self</option><option>Investment</option><option>NRI property purchase</option><option>Other</option></select></label></div>
     <div className="field-row"><label>Additional details <span className="optional">Optional</span><textarea name="message" maxLength={1000} rows={3} placeholder="Tell us what you are looking for"/></label></div>
     <div className="honeypot" aria-hidden="true"><label>Leave this field empty<input name="website" tabIndex={-1} autoComplete="off"/></label></div>
     <label className="consent-row"><input name="consent" type="checkbox" required/><span>I agree that LandlordShares may use my information to respond to this enquiry. I have read the <a href="/privacy" target="_blank" rel="noreferrer">Privacy Notice</a>. *</span></label>
     {message && <p className="form-message error-message" role="alert">{message}</p>}
     <button className="button button-dark submit-button" type="submit" disabled={status === 'sending'}>{status === 'sending' ? 'Submitting…' : 'Submit enquiry'} <span aria-hidden="true">→</span></button>
-    <p className="form-footnote">By submitting, you request a response about your selected property. Please do not include sensitive personal or financial information.</p>
+    <p className="form-footnote">By submitting, you request personal assistance from our team. Please do not include sensitive personal or financial information.</p>
   </form>;
 }

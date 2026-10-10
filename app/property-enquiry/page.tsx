@@ -21,7 +21,7 @@ export default async function PropertyEnquiryPage({ searchParams }: Props) {
         <div className="lead-layout">
           <div className="lead-intro">
             <span className="eyebrow"><span className="eyebrow-dot" /> LANDLORDSHARES · PROPERTY ENQUIRIES</span>
-            <h1>Let’s find the right Landlord property <em>for you.</em></h1>
+            <h1>Let’s find the right <em>Landlord</em> property <em>for you.</em></h1>
             <p className="intro-copy">Looking for your next home or investment in Hyderabad? Share a few details and our property team will help you explore suitable options.</p>
 
             <div className="intro-points">
